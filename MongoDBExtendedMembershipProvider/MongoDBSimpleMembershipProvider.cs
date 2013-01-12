@@ -252,7 +252,7 @@ namespace MongoDBExtendedMembershipProvider
                 if (user == null)
                     return false;
                 var query = Query.EQ("UserId", user.UserId);
-                return this.mongoDB.GetCollection<WebpagesMembership>("WebpagesMembership").Remove(query).Ok;
+                return this.mongoDB.GetCollection<WebpagesMembership>("WebpagesMembership").Remove(query, WriteConcern.Acknowledged).Ok;
             }
         }
 
@@ -449,10 +449,10 @@ namespace MongoDBExtendedMembershipProvider
             }
 
             var query = Query.EQ("UserId", user.UserId);
-            var res = this.mongoDB.GetCollection<WebpagesOauthMembership>("WebpagesOauthMembership").Remove(query).Ok;
-            res &= this.mongoDB.GetCollection<WebpagesMembership>("WebpagesMembership").Remove(query).Ok;
+            var res = this.mongoDB.GetCollection<WebpagesOauthMembership>("WebpagesOauthMembership").Remove(query, WriteConcern.Acknowledged).Ok;
+            res &= this.mongoDB.GetCollection<WebpagesMembership>("WebpagesMembership").Remove(query, WriteConcern.Acknowledged).Ok;
             // TODO what if above fails
-            return this.mongoDB.GetCollection<UserProfile>("UserProfile").Remove(query).Ok;
+            return this.mongoDB.GetCollection<UserProfile>("UserProfile").Remove(query, WriteConcern.Acknowledged).Ok;
         }
 
         public override System.Web.Security.MembershipUser GetUser(string username, bool userIsOnline)
@@ -564,7 +564,7 @@ namespace MongoDBExtendedMembershipProvider
         public override void DeleteOAuthToken(string token)
         {
             this.mongoDB.GetCollection<WebpagesOauthToken>("WebpagesOauthToken").Remove(
-                                    Query.EQ("Token", token));
+                                    Query.EQ("Token", token), WriteConcern.Acknowledged);
         }
 
         public override string GeneratePasswordResetToken(string userName)
@@ -605,7 +605,7 @@ namespace MongoDBExtendedMembershipProvider
         }
         public override void ReplaceOAuthRequestTokenWithAccessToken(string requestToken, string accessToken, string accessTokenSecret)
         {
-            this.mongoDB.GetCollection<WebpagesOauthToken>("WebpagesOauthToken").Remove(Query.EQ("Token", requestToken));
+            this.mongoDB.GetCollection<WebpagesOauthToken>("WebpagesOauthToken").Remove(Query.EQ("Token", requestToken), WriteConcern.Acknowledged);
             this.StoreOAuthRequestToken(accessToken, accessTokenSecret);
         }
         public override void StoreOAuthRequestToken(string requestToken, string requestTokenSecret)

@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MongoDBExtendedMembershipProvider", "MongoDBExtendedMembershipProvider\MongoDBExtendedMembershipProvider.csproj", "{0ACD5CF3-79F9-48DB-B1F2-5057BD851B5E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{E221F998-7779-48A6-BDA7-AE48B672F99D}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\packages.config = .nuget\packages.config
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
