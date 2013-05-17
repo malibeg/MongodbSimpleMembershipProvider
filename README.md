@@ -2,7 +2,10 @@ MongodbSimpleMembershipProvider
 ===============================
 
 Providers are not fully tested !!!
-This is MongoDB ExtendedMembersipProvider for MVC 4.0. 
+This is implementation of SimpleMemershipProvider and SimpleRoleProvider for MongoDB 
+( by implementing abstract classes: WebMatrix.WebData.ExtendedMembershipProvider, and the standard System.Web.Security.RoleProvider) for MVC 4.0. 
+Since it is made for MVC 4.0 it supports OAuth authentication.
+
 
 Code is made thanks to:
 
