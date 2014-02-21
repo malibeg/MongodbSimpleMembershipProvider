@@ -53,10 +53,11 @@ namespace MongoDBExtendedMembershipProvider
             base.Initialize(name, config);
 
             ApplicationName = GetValueOrDefault(config, "applicationName", o => o.ToString(), "MySampleApp");
-            
+
             // MongoDB setup
             this.ConnectionStringName = GetValueOrDefault(config, "connectionString", o => o.ToString(), string.Empty);
-            this.mongoDB = MongoServer.Create(config["connectionString"] ?? "mongodb://localhost").GetDatabase(config["database"] ?? "nadjiba");
+            this.mongoDB = new MongoClient(config["connectionString"] ?? "mongodb://localhost").GetServer().GetDatabase(config["database"] ?? "nadjiba", SafeMode.True);
+
             mongoDB.SetProfilingLevel(ProfilingLevel.All);
             // set id autoincrement generator
             BsonClassMap.RegisterClassMap<UserProfile>(cm =>
@@ -507,7 +508,7 @@ namespace MongoDBExtendedMembershipProvider
                 {
                     // TODO lock Inplement int generator
                     //var count = (int)this.mongoDB.GetCollection<UserProfile>("UserProfile").Count();
-                    user = new UserProfile {UserName = userName };
+                    user = new UserProfile { UserName = userName };
                     this.mongoDB.GetCollection<UserProfile>("UserProfile").Insert(user, WriteConcern.Acknowledged);
                     user = this.GetUsers(new[] { userName }).FirstOrDefault();
                 }

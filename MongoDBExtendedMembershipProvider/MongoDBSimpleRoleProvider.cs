@@ -46,7 +46,8 @@ namespace MongoDBExtendedMembershipProvider
 
             // MongoDB setup
             this.ConnectionStringName = GetValueOrDefault(config, "connectionStringName", o => o.ToString(), string.Empty);
-            mongoDatabase = MongoServer.Create(config["connectionString"] ?? "mongodb://localhost").GetDatabase(config["database"] ?? "nadjiba");
+            mongoDatabase = new MongoClient(config["connectionString"] ?? "mongodb://localhost").GetServer().GetDatabase(config["database"] ?? "nadjiba", SafeMode.True);
+
             // set id autoincrement generator
             BsonClassMap.RegisterClassMap<WebpagesRole>(cm =>
             {
@@ -87,14 +88,14 @@ namespace MongoDBExtendedMembershipProvider
         #region Abstract Method Overrides
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
         {
-                var users = GetUsers(usernames);
-                var roles = GetRoles(roleNames);
+            var users = GetUsers(usernames);
+            var roles = GetRoles(roleNames);
 
-                var userIds = users.Select(u => u.UserId).ToArray();
-                var roleIds = roles.Select(r => r.RoleId).ToArray();
+            var userIds = users.Select(u => u.UserId).ToArray();
+            var roleIds = roles.Select(r => r.RoleId).ToArray();
 
 
-                
+
             foreach (var role in roles)
             {
                 var query = Query.EQ("RoleId", role.RoleId);
@@ -106,7 +107,7 @@ namespace MongoDBExtendedMembershipProvider
                     throw new InvalidOperationException(string.Format("User with id = {0} already exists in role {1}", alreadyExist.First().UserId, role.RoleName));
                 }
 
-                var roleUser = users.Select(u => new WebpagesUsersInRole() {RoleId = role.RoleId, UserId = u.UserId});
+                var roleUser = users.Select(u => new WebpagesUsersInRole() { RoleId = role.RoleId, UserId = u.UserId });
                 this.mongoDatabase.GetCollection<WebpagesUsersInRole>("WebpagesUsersInRole").InsertBatch(roleUser, WriteConcern.Acknowledged);
             }
         }
